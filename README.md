@@ -1,4 +1,4 @@
-# mealviewer
+# mealviewer for Homeassistant
 
 Place mealviewer/ directory inside /config/custom_components/
 
@@ -29,4 +29,4 @@ content: |-
 title: School Lunch
 
 ```
-Let me know if have any suggestions
+Let me know if have any suggestions. Right now I leave the entry blank if no information. Each school gets upated once every 12 hours. 
