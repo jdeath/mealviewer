@@ -44,13 +44,6 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     # Only one sensor update once every 60 seconds to avoid
     entity_next = 0
 
-    @callback
-    def do_update(time):
-        nonlocal entity_next
-        entities[entity_next].async_schedule_update_ha_state(True)
-        entity_next = (entity_next + 1) % len(entities)
-
-    track_time_interval(hass, do_update, BASE_INTERVAL)
 
 
 class mealviewerSensor(Entity):
@@ -83,70 +76,72 @@ class mealviewerSensor(Entity):
     def state(self):
         """Return the state of the sensor."""
         return self._state
+    
     @property
     def should_poll(self):
         """Turn off polling, will do ourselves."""
-        return False
+        return True
         
     def update(self):
         """Update device state."""
         
-        
-        #try:
-        host = 'https://api.mealviewer.com/api/v4/school'
-        school = self._account
-        self._name = school
+        self._state = 'Not Updated'
+        try:
+            host = 'https://api.mealviewer.com/api/v4/school'
+            school = self._account
+            self._name = school
 
-        for day in range(5):
-            tomorrow = arrow.utcnow().to('US/Eastern').shift(days=day)
-           
-            meal = ''
+            for day in range(5):
+                tomorrow = arrow.utcnow().to('US/Eastern').shift(days=day)
+            
+                meal = ''
   
 
-            if tomorrow.weekday() not in (5, 6):
-                formatted_tomorrow = tomorrow.format('MM-DD-YYYY')
+                if tomorrow.weekday() not in (5, 6):
+                    formatted_tomorrow = tomorrow.format('MM-DD-YYYY')
 
-                url = f'{host}/{school}/{formatted_tomorrow}/{formatted_tomorrow}'
+                    url = f'{host}/{school}/{formatted_tomorrow}/{formatted_tomorrow}'
    
-                r = requests.get(url)
-                menus = r.json().get('menuSchedules')[0].get('menuBlocks')
+                    r = requests.get(url)
+                    menus = r.json().get('menuSchedules')[0].get('menuBlocks')
         
                     
-                if not menus:
-                    meal = ''
-                else:
-                    lunch_menu = menus[0]
+                    if not menus:
+                        meal = ''
+                    else:
+                        lunch_menu = menus[0]
                     
-                    meal = tomorrow.format('dddd')
-                    counter = 0
-                    for datas in lunch_menu.get('cafeteriaLineList').get('data')[0]['foodItemList']['data']:
-                        counter = counter + 1
-                        entree = datas['item_Name']
-                        if counter == 1:
-                            meal = meal + ': ' + entree
-                        else:
-                            meal = meal + ', ' + entree
+                        meal = tomorrow.format('dddd')
+                        counter = 0
+                        for datas in lunch_menu.get('cafeteriaLineList').get('data')[0]['foodItemList']['data']:
+                            counter = counter + 1
+                            entree = datas['item_Name']
+                            if counter == 1:
+                                meal = meal + ': ' + entree
+                            else:
+                                meal = meal + ', ' + entree
                 
-            if day == 0:
-                self._lunch0 = meal
-            if day == 1:
-                self._lunch1 = meal
-            if day == 2:
-                self._lunch2 = meal
-            if day == 3:
-                self._lunch3 = meal
-            if day == 4:
-                self._lunch4 = meal
+                if day == 0:
+                    self._lunch0 = meal
+                if day == 1:
+                    self._lunch1 = meal
+                if day == 2:
+                    self._lunch2 = meal
+                if day == 3:
+                    self._lunch3 = meal
+                if day == 4:
+                    self._lunch4 = meal
                     
-        #except:        
-        #    self._lunch0 = None
-        #    self._lunch1 = None
-        #    self._lunch2 = None
-        #    self._lunch3 = None
-        #    self._lunch4 = None
+                self._state = 'Updated'    
+        except:        
+            self._lunch0 = None
+            self._lunch1 = None
+            self._lunch2 = None
+            self._lunch3 = None
+            self._lunch4 = None
     
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes."""
         attr = {}
         
