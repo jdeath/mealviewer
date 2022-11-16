@@ -16,7 +16,7 @@ SchoolName is the name in the Mealviewer URL: https://schools.mealviewer.com/sch
 This will create a sensor called sensor.mealviewever_hookstadthighschool with attributes of lunch0, lunch1, lunch2, lunch3, lunch4 which are the lunches of today - five days from now.
 Multiple schools should work, but not tested.
 
-This code works for me, but may need to be changed if yout school offers breakfast.
+This code works for me, but may need to be changed if your school offers breakfast.
 
 I am using a markdown card to display the first 3 entries.
 
