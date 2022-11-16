@@ -1,0 +1,5 @@
+{
+  "name": "mealviewer",
+  "render_readme": true,
+  "homeassistant": "2021.3.1"
+}
