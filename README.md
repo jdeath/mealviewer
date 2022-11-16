@@ -6,9 +6,9 @@ In your /config/configuration.yaml add a block under sensors:
 
 ```
 - platform: mealviewer
-    accounts:
-      - 'SchoolName'
-      - 'SchoolName2'
+  accounts:
+    - 'SchoolName'
+    - 'SchoolName2'
 ```      
       
 SchoolName is the name in the Mealviewer URL: https://schools.mealviewer.com/school/HookstadtHighSchool , school name is HookstadtHighSchool
